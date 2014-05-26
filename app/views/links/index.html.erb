@@ -4,6 +4,6 @@
 <%= link_to "Add a Link", new_link_path %><br>
 
 <% @links.each do |link| %>
-	<%= link_to "edit", edit_link_path(link)%> <%= link_to "delete", link_path(link), method: :delete %>  <b><%= link.title %></b> - <%= link.url %> <br>
+	<%= link_to "edit", edit_link_path(link)%> <%= link_to "delete", link_path(link), method: :delete %>  <b><%= link.title %></b> - <%= link_to link.url, link.url %> <br>
 <% end %>
 
