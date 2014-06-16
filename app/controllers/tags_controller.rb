@@ -2,6 +2,7 @@ class TagsController < ApplicationController
   before_action :find_tag, only: [:show, :edit, :update, :destroy]
 
   def index
+    # finds tags by search input and orders alphabetically by tag name
     @tags = Tag.search(params[:search]).order(:name)
     respond_to do |format|
       format.html
@@ -10,11 +11,13 @@ class TagsController < ApplicationController
   end
 
   def new
+    # creates a new tag associated with a link_id through link_tags
     @tag = Tag.new
     @tag.link_tags.build
   end
 
   def create
+    # saves new tag and redirects to the show page for that tag id
     @tag = Tag.new(tags_params)
     if @tag.save
       redirect_to tag_path(@tag)
@@ -25,7 +28,7 @@ class TagsController < ApplicationController
   
 
   def show
-    # @tag = Tag.find(params[:id])
+    # renders show page (displays all links associated with that tag)
   end
 
   def edit

@@ -1,0 +1,1 @@
+// homepage javascript is in views/links/index.html.erb

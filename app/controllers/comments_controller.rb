@@ -23,12 +23,12 @@ before_filter :load_link
   end
 
   private 
-  def load_link
-  	@link = Link.find(params[:link_id])
-  end
-  def comment_params # require that the params hash contains a bid, permit the amount attribute.
-  	params.require(:comment).permit(:content, :user_id)
-  	
-  end
+    def load_link
+    	@link = Link.find(params[:link_id])
+    end
 
+    def comment_params # require that the params hash contains a bid, permit the amount attribute.
+    	params.require(:comment).permit(:content, :user_id)
+    	
+    end
 end

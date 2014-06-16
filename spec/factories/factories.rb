@@ -13,6 +13,7 @@ FactoryGirl.define do
   factory :link do
     title "Best Link Ever"
     url "https://www.google.com"
+    tag ""
     # user  # currently we don't have any user/link association??
   end
 

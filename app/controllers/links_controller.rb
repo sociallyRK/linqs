@@ -23,7 +23,8 @@ class LinksController < ApplicationController
   end
 
 
-  # will eventually display all public links via ajax get request
+# sorts public links alphabetically by title
+# renders json for dynamic display without reloading
   def sort_by_title
     @links = Link.all.order(:title)
     both = separate_public_and_private(links)
@@ -66,33 +67,34 @@ class LinksController < ApplicationController
 
 
 
-  # should build new tags associated with the new link - is this working??
+  # creates new tags associated with the new link
   def new
     @link = Link.new
     @link_tag = @link.link_tags.build
     @link_tag.build_tag
   end
 
-  # will send new instance of link via ajax post to db and retrieves json for same link to display on page without reloading
+  # sends new instance of link via ajax post to db and retrieves json for same link to display on page without reloading
   def create
     # decide if link url already exists in db
     @potentialLink = Link.find_by(url: links_params[:url])
     @link = current_user.links.new(title: links_params[:title], url: links_params[:url])
+    # cleans up link so that it always has http://
     if @link.url.include?("http://")
       @link.save
     else
       @link.url.insert(0, "http://")
       @link.save
     end
-    #@keyword = self.keywords
-    #capture string of tags
-
+    # @keyword = self.keywords
+    
+    # captures string of tags
     @inputtedtags = (links_params[:link_tags_attributes]["0"][:tag_attributes][:name]).gsub(/,/,'').downcase.split(" ").flatten
     
     # Decide if tag is already in the database
     @inputtedtags.each do |tag|
       potentialTag = Tag.find_by(name: tag)
-      # if tag is already in db, create a new association btween new link and old tag
+      # if tag is already in db, create a new association between new link and old tag
       if potentialTag
         @link_tag = @link.link_tags.build(link_id: @link.id, tag_id: potentialTag.id)
         @link_tag.save
@@ -102,15 +104,14 @@ class LinksController < ApplicationController
         @link.save
       end
     end
+    # render tags dynamically without reloading page
     respond_to do |format|
       if @link.save
         format.json { render :json => @link, :include=> :tags, status: :created}
       else
         format.json { render json: @link.errors, status: :unprocessable_entity}
       end
-      # end
     end
-        #binding.pry
   end
 
   # shows details of a single link, including all tags assoc'd with it
@@ -127,7 +128,7 @@ class LinksController < ApplicationController
     end
   end
 
-  # will send updated link attributes via ajax post
+  # sends updated link attributes via ajax post
   def update
     if @link.update(links_params)
       redirect_to link_path(@link)
@@ -137,6 +138,7 @@ class LinksController < ApplicationController
     end
   end
 
+  # saves a "like" vote and increases count for "order by popularity"
   def up_vote
     session[:return_to] ||= request.referer
     @link = Link.find(params[:id])
@@ -145,6 +147,7 @@ class LinksController < ApplicationController
     redirect_to session.delete(:return_to)
   end
 
+  # deletes a "like" vote and decreases count for "order by publicity"
   def down_vote
     session[:return_to] ||= request.referer
     @link  = Link.find(params[:id])
@@ -166,9 +169,11 @@ class LinksController < ApplicationController
   def find_link
     @link = Link.find(params[:id])
   end
+  
   def links_params
     params.require(:link).permit(:title, :url, :link_tags_attributes => [:tag_attributes =>[:name]])
   end
+
   def sort_column
     Link.column_names.include?(params[:sort]) ? params[:sort] : "updated_at"
   end

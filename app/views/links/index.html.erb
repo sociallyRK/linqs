@@ -1,64 +1,65 @@
-<!-- 
-<div id="greeting"> Welcome To The Linqs App </div>
-<br> -->
 
 <div id="search"> <%= render 'search' %> </div>
+<div id="sort"><%= render 'sort' %></div>
 
-<div id="sort"><%= render 'sort' %>
-</div>
 
 <div id="all-tags"><%= link_to "Browse All Tags", tags_path %> </div>
 <div id="displayText"><a href="javascript:toggle();">Add a link</a></div>
 
+<% @links.each do |link| %>
+	<%= link_to "edit", edit_link_path(link)%> <%= link_to "delete", link_path(link), method: :delete %>  <b><%= link.title %></b> - <%= link_to link.url, link.url %> <br>
+<% end %>
+
+
 <!-- find link is currently hidden -->
 <form id="new_link">
-    <input type="text" id="title" placeholder="Title" >
+    <input type="text" id="title" placeholder="Title">
     <input type="text" id="url" placeholder="URL">
     <input type="text" id="name" placeholder="Tags (comma separated)">
-    <input type="submit"  >
+    <input type="submit">
     <br>
 </form>
 
- <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Public Links: </h3>
-    </div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Public Links: </h3>
+  </div>
+
   <div class="panel-body">
-   <table class="table table-hover">
-    <ul id="publiclist">
-        <% @link_pub.each do |link| %> <tr>
-       <td> 
-           <b><%= link_to link.title, link.url %> </b> 
-           <div id="menu">
-          </div>  
-                <a href="<%=link.url%>"><%= @link.url %></a>
-                Tags: <% link.tags.each do |tag| %>
-                <%= link_to tag.name, tag_path(tag) %>
-                <% end %>
-                <div id="comments">
-               <%= link_to "Comment", new_link_comment_path(link)%> -                
-               <%= link_to "Edit", edit_link_path(link)%> - 
-               <%= link_to "Delete", link_path(link),method: :delete %>
-                <% link.comments.each do |comment| %>
-                  <li>
-                    <%= comment.content %> 
-                    <% if comment.user %>
-                    </li>
-                    <% else %>
-                      <% %>
+    <table class="table table-hover">
+      <ul id="publiclist">
+          <% @link_pub.each do |link| %> 
+            <tr>
+              <td><b><%= link_to link.title, link.url %> </b> 
+                <div id="menu"></div> <!-- what is this for? -->
+                  <a href="<%=link.url%>"><%= @link.url %></a> <!-- why do we need this, if we have the link_to above? -->
+                  Tags: <% link.tags.each do |tag| %>
+                    <%= link_to tag.name, tag_path(tag) %>
+                  <% end %>
+                  <div id="comments">
+                    <%= link_to "Comment", new_link_comment_path(link)%> -                
+                    <%= link_to "Edit", edit_link_path(link)%> - 
+                    <%= link_to "Delete", link_path(link),method: :delete %>
+                    <% link.comments.each do |comment| %>
+                      <li>
+                        <%= comment.content %> 
+                        <% if comment.user %>
+                      </li>
+                        <% else %>
+                        <% %>
+                        <% end %>
                     <% end %>
-                <% end %>
-              </div>
-                 <div id="likes">
-                       Likes 
-                        <%= link_to link.upvotes, "/links/vote/upvote/#{link.id}", :class => 'btn btn-default' %>
-                        Dislikes 
-                        <%= link_to link.downvotes, "/links/vote/downvote/#{link.id}", :class => 'btn btn-default' %>
-                 </div>
-                <br>
-              </tr>
-        <% end %>
-     </ul>
+                  </div>
+                  <div id="likes">
+                    Likes 
+                      <%= link_to link.upvotes, "/links/vote/upvote/#{link.id}", :class => 'btn btn-default' %>
+                    Dislikes 
+                      <%= link_to link.downvotes, "/links/vote/downvote/#{link.id}", :class => 'btn btn-default' %>
+                  </div>
+                  <br>
+            </tr>
+          <% end %>
+      </ul>
     </table>
   </div>
 </div>
@@ -67,40 +68,41 @@
     <div class="panel-heading">
       <h3 class="panel-title">Private Links:</h3>
     </div>
+
   <div class="panel-body">
    <table class="table table-hover">
     <ul id="privatelist">
-        <% @link_priv.each do |link| %> <tr>
-       <td> 
-           <b><%= link_to link.title, link.url %> </b> 
-           <div id="menu">
-          </div>  
-                <a href="<%=link.url%>"><%= @link.url %></a>
-                Tags: <% link.tags.each do |tag| %>
-                <%= link_to tag.name, tag_path(tag) %>
-                <% end %>
-                <div id="comments">
-               <%= link_to "Comment", new_link_comment_path(link)%> -                
-               <%= link_to "Edit", edit_link_path(link)%> - 
-               <%= link_to "Delete", link_path(link),method: :delete %>
-                <% link.comments.each do |comment| %>
-                  <li>
-                    <%= comment.content %> 
-                    <% if comment.user %>
-                    </li>
-                    <% else %>
-                      <% %>
-                    <% end %>
-                <% end %>
-              </div>
-                 <div id="likes">
-                       Likes 
-                        <%= link_to link.upvotes, "/links/vote/upvote/#{link.id}", :class => 'btn btn-default' %>
-                        Dislikes 
-                        <%= link_to link.downvotes, "/links/vote/downvote/#{link.id}", :class => 'btn btn-default' %>
-                 </div>
-                <br>
-              </tr>
+      <% @link_priv.each do |link| %> 
+      <tr>
+        <td> 
+          <b><%= link_to link.title, link.url %> </b> 
+          <div id="menu"></div>  
+            <a href="<%=link.url%>"><%= @link.url %></a>
+            Tags: <% link.tags.each do |tag| %>
+              <%= link_to tag.name, tag_path(tag) %>
+            <% end %>
+            <div id="comments">
+              <%= link_to "Comment", new_link_comment_path(link)%> -                
+              <%= link_to "Edit", edit_link_path(link)%> - 
+              <%= link_to "Delete", link_path(link),method: :delete %>
+              <% link.comments.each do |comment| %>
+                <li>
+                  <%= comment.content %> 
+                  <% if comment.user %>
+                </li>
+                  <% else %>
+                    <% %>
+                  <% end %>
+              <% end %>
+            </div>
+            <div id="likes">
+              Likes 
+                <%= link_to link.upvotes, "/links/vote/upvote/#{link.id}", :class => 'btn btn-default' %>
+              Dislikes 
+                <%= link_to link.downvotes, "/links/vote/downvote/#{link.id}", :class => 'btn btn-default' %>
+            </div>
+            <br>
+          </tr>
         <% end %>
      </ul>
     </table>
